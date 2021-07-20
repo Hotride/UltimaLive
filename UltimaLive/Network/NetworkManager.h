@@ -85,7 +85,9 @@ class NetworkManager
     void onLandUpdate(uint8_t mapNumber, uint32_t blockNumber, uint8_t* pLandData);
     void onStaticsUpdate(uint8_t mapNumber, uint32_t blockNumber, uint8_t* pStaticsData, uint32_t length);
     void onRefreshClient();
+    void onBlocksViewRange(int32_t minBlockX, int32_t maxBlockX, int32_t minBlockY, int32_t maxBlockY);
     void onBlockQueryRequest(int32_t blockNumber, uint8_t mapNumber);
+    void onBlockQuery32Request(int32_t blockNumber, uint8_t mapNumber);
     void onUltimaLiveLoginComplete(std::string shardIdentifier);
 
     void onServerMobileUpdate();
@@ -99,7 +101,9 @@ class NetworkManager
     void subscribeToLandUpdate(std::function<void(uint8_t, uint32_t, uint8_t*)> pCallback);
     void subscribeToStaticsUpdate(std::function<void(uint8_t, uint32_t, uint8_t*, uint32_t)> pCallback);
     void subscribeToRefreshClient(std::function<void()> pCallback);
+    void subscribeToBlocksViewRange(std::function<void(int32_t, int32_t, int32_t, int32_t)> pCallback);
     void subscribeToBlockQueryRequest(std::function<void(int32_t, uint8_t)> pCallback);
+    void subscribeToBlockQuery32Request(std::function<void(int32_t, uint8_t)> pCallback);
     void subscribeToUltimaLiveLoginComplete(std::function<void(std::string)> pCallback);
 
     void subscribeToServerMobileUpdate(std::function<void()> pCallback);
@@ -120,7 +124,9 @@ class NetworkManager
     std::vector<std::function<void(uint8_t, uint32_t, uint8_t*)>> m_onLandUpdateSubscriber;              //!< LandUpdate event subscriber list
     std::vector<std::function<void(uint8_t, uint32_t, uint8_t*, uint32_t)>> m_onStaticsUpdateSubscriber; //!< StaticsUpdate event subscriber list
     std::vector<std::function<void()>> m_onRefreshClientViewSubscriber;                                  //!< RefreshClientView event subscriber list
+    std::vector<std::function<void(int32_t, int32_t, int32_t, int32_t)>> m_onBlocksViewRangeSubscriber;				 //!< BlocksViewRange event subscriber list
     std::vector<std::function<void(uint32_t, uint8_t)>> m_onBlockQueryRequestSubscriber;				 //!< BlockQueryRequest event subscriber list
+    std::vector<std::function<void(uint32_t, uint8_t)>> m_onBlockQuery32RequestSubscriber;				 //!< BlockQuery32Request event subscriber list
     std::vector<std::function<void(std::string)>> m_onUltimaLiveLoginCompleteSubscriber;				 //!< UltimaLive LoginComplete event subscriber list
 
     //regular game logic

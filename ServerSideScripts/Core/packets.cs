@@ -145,6 +145,55 @@ namespace UltimaLive.Network
     }
     #endregion
 
+    #region Query Client Hash32 Packet
+    //This is now using a CRC32 check instead of versions
+    public class QueryClientHash32 : Packet 
+    {
+        public QueryClientHash32(Mobile m)
+            : base(0x3F)
+        {
+            Map playerMap = m.Map;
+            TileMatrix tm = playerMap.Tiles;
+            int blocknum = (((m.Location.X >> 3) * tm.BlockHeight) + (m.Location.Y >> 3));
+            //Console.WriteLine(String.Format("Block Query Hash: {0}", blocknum));
+
+                                                        //byte 000         -  cmd
+            this.EnsureCapacity(15);                    //byte 001 to 002  -  packet size
+            m_Stream.Write((UInt32)blocknum);           //byte 003 to 006  -  central block number for the query (block that player is standing in)
+            m_Stream.Write((Int32)0);                   //byte 007 to 010  -  number of statics in the packet (0 for a query)
+            m_Stream.Write((UInt16)0x0000);             //byte 011 to 012  -  UltimaLive sequence number
+            m_Stream.Write((byte)0xFD);                 //byte 013         -  UltimaLive command (0xFD is a block Query32)
+            m_Stream.Write((byte)playerMap.MapID);      //byte 014         -  UltimaLive mapnumber
+        }
+    }
+    #endregion
+
+    #region Blocks View Range Packet
+    public class BlocksViewRange : Packet 
+    {
+        public BlocksViewRange(Mobile m, short minBlockX, short maxBlockX, short minBlockY, short maxBlockY)
+            : base(0x3F)
+        {
+            Map playerMap = m.Map;
+            TileMatrix tm = playerMap.Tiles;
+            int blocknum = (((m.Location.X >> 3) * tm.BlockHeight) + (m.Location.Y >> 3));
+            //Console.WriteLine(String.Format("Block Query Hash: {0}", blocknum));
+
+                                                        //byte 000         -  cmd
+            this.EnsureCapacity(23);                    //byte 001 to 002  -  packet size
+            m_Stream.Write((UInt32)blocknum);           //byte 003 to 006  -  central block number for the query (block that player is standing in)
+            m_Stream.Write((Int32)0);                   //byte 007 to 010  -  number of statics in the packet (0 for a query)
+            m_Stream.Write((UInt16)0x0000);             //byte 011 to 012  -  UltimaLive sequence number
+            m_Stream.Write((byte)0x04);                 //byte 013         -  UltimaLive command (0x04 is a blocks view range)
+            m_Stream.Write((byte)playerMap.MapID);      //byte 014         -  UltimaLive mapnumber
+            m_Stream.Write(minBlockX);
+            m_Stream.Write(maxBlockX);
+            m_Stream.Write(minBlockY);
+            m_Stream.Write(maxBlockY);
+        }
+    }
+    #endregion
+
     #region Update Map Definitions
     //This is sent to the client so the client knows the dimensions of extra maps.
     public class MapDefinitions : Packet

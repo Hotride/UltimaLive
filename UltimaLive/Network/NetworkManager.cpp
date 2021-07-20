@@ -131,7 +131,9 @@ NetworkManager::NetworkManager()
   m_onLandUpdateSubscriber(),
   m_onStaticsUpdateSubscriber(),
   m_onRefreshClientViewSubscriber(),
+  m_onBlocksViewRangeSubscriber(),
   m_onBlockQueryRequestSubscriber(),
+  m_onBlockQuery32RequestSubscriber(),
   m_onUltimaLiveLoginCompleteSubscriber(),
   m_onServerMobileUpdateSubscribers(),
   m_onLoginConfirmSubscribers(),
@@ -363,6 +365,16 @@ void NetworkManager::subscribeToRefreshClient(std::function<void()> pCallback)
 }
 
 /**
+ * @brief Subscribes to the UltimaLive blocks view range packet
+ *
+ * @param pCallback Packet handler function
+ */
+void NetworkManager::subscribeToBlocksViewRange(std::function<void(int32_t, int32_t, int32_t, int32_t)> pCallback)
+{
+    m_onBlocksViewRangeSubscriber.push_back(pCallback);
+}
+
+/**
  * @brief Subscribes to the UltimaLive block query packet
  *
  * @param pCallback Packet handler function
@@ -370,6 +382,16 @@ void NetworkManager::subscribeToRefreshClient(std::function<void()> pCallback)
 void NetworkManager::subscribeToBlockQueryRequest(std::function<void(int32_t, uint8_t)> pCallback)
 {
   m_onBlockQueryRequestSubscriber.push_back(pCallback);
+}
+
+/**
+ * @brief Subscribes to the UltimaLive block query32 packet
+ *
+ * @param pCallback Packet handler function
+ */
+void NetworkManager::subscribeToBlockQuery32Request(std::function<void(int32_t, uint8_t)> pCallback)
+{
+    m_onBlockQuery32RequestSubscriber.push_back(pCallback);
 }
 
 /**
@@ -498,6 +520,22 @@ void NetworkManager::onRefreshClient()
 }
 
 /**
+ * @brief Fires the blocks view range event
+ *
+ * @param minBlockX min block x
+ * @param maxBlockX max block x
+ * @param minBlockY min block y
+ * @param maxBlockY max block y
+ */
+void NetworkManager::onBlocksViewRange(int32_t minBlockX, int32_t maxBlockX, int32_t minBlockY, int32_t maxBlockY)
+{
+    for (std::vector<std::function<void(int32_t, int32_t, int32_t, int32_t)>>::iterator itr = m_onBlocksViewRangeSubscriber.begin(); itr != m_onBlocksViewRangeSubscriber.end(); itr++)
+    {
+        (*itr)(minBlockX, maxBlockX, minBlockY, maxBlockY);
+    }
+}
+
+/**
  * @brief Fires the block query request event
  *
  * @param blockNumber Block Number
@@ -509,6 +547,20 @@ void NetworkManager::onBlockQueryRequest(int32_t blockNumber, uint8_t mapNumber)
   {
     (*itr)(blockNumber, mapNumber);
   }
+}
+
+/**
+ * @brief Fires the block query32 request event
+ *
+ * @param blockNumber Block Number
+ * @param mapNumber Map Number
+ */
+void NetworkManager::onBlockQuery32Request(int32_t blockNumber, uint8_t mapNumber)
+{
+    for (std::vector<std::function<void(uint32_t, uint8_t)>>::iterator itr = m_onBlockQuery32RequestSubscriber.begin(); itr != m_onBlockQuery32RequestSubscriber.end(); itr++)
+    {
+        (*itr)(blockNumber, mapNumber);
+    }
 }
 
 /**

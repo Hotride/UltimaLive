@@ -51,19 +51,30 @@ class Atlas
 {
   public:
     Atlas();
-    uint16_t* GetGroupOfBlockCrcs(uint32_t mapNumber, uint32_t blockNumber);
+    std::vector<uint16_t> GetGroupOfBlockCrcs(uint32_t mapNumber, uint32_t blockNumber);
+    std::vector<uint32_t> GetGroupOfBlockCrcs32(uint32_t mapNumber, uint32_t blockNumber);
 
     static uint16_t fletcher16(uint8_t* pBlockData, uint8_t* pStaticsData, uint32_t staticsLength);
+    static uint32_t calculateCrc32(uint8_t* pBlockData, uint8_t* pStaticsData, uint32_t staticsLength);
 
     void LoadMap(uint8_t map);
     uint8_t getCurrentMap();
 
 
   protected:
+      int32_t m_MinBlockX = -2;
+      int32_t m_MaxBlockX = 2;
+      int32_t m_MinBlockY = -2;
+      int32_t m_MaxBlockY = 2;
+      int32_t m_BlocksWidth = 5;
+      int32_t m_BlocksHeight = 5;
+
     void onBeforeMapChange(uint8_t& rMap);
     void onMapChange(uint8_t& rMap);
 
+    void onBlocksViewRange(int32_t minBlockX, int32_t maxBlockX, int32_t minBlockY, int32_t maxBlockY);
     void onHashQuery(uint32_t blockNumber, uint8_t mapNumber);
+    void onHashQuery32(uint32_t blockNumber, uint8_t mapNumber);
     void onRefreshClientView();
     void onUpdateMapDefinitions(std::vector<MapDefinition> definitions);
     void onUpdateStatics(uint8_t mapNumber, uint32_t blockNumber, uint8_t* pData, uint32_t length);
@@ -76,6 +87,7 @@ class Atlas
     static int32_t BLOCK_POSITION_OFFSETS[5];  //!< Array of offsets used when calculating hashes
 
     uint16_t getBlockCrc(uint32_t mapNumber, uint32_t blockNumber);
+    uint32_t getBlockCrc32(uint32_t mapNumber, uint32_t blockNumber);
 
 
     std::map<uint32_t, MapDefinition> m_mapDefinitions; //!< Map linking map indices to map definitions 

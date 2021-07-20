@@ -28,9 +28,11 @@
 #include "ConcretePacketHandlers\LogoutRequestHandler.h"
 #include "ConcretePacketHandlers\LoginConfirmHandler.h"
 #include "ConcretePacketHandlers\UltimaLiveRefreshClientViewHandler.h"
+#include "ConcretePacketHandlers\UltimaLiveBlocksViewRangeHandler.h"
 #include "ConcretePacketHandlers\UltimaLiveUpdateMapDefinitionsHandler.h"
 #include "ConcretePacketHandlers\UltimaLiveUpdateStaticsHandler.h"
 #include "ConcretePacketHandlers\UltimaLiveHashQueryHandler.h"
+#include "ConcretePacketHandlers\UltimaLiveHashQuery32Handler.h"
 #include "ConcretePacketHandlers\UltimaLiveUpdateLandBlockHandler.h"
 #include "ConcretePacketHandlers\UltimaLiveLoginCompleteHandler.h"
 #include "ConcretePacketHandlers\ServerMobileStatusHandler.h"
@@ -74,6 +76,8 @@ std::map<uint8_t, BasePacketHandler*> PacketHandlerFactory::GenerateUltimaLiveSe
   handlers[0x01] = new UltimaLiveUpdateMapDefinitionsHandler(pManager);
   handlers[0x02] = new UltimaLiveLoginCompleteHandler(pManager);
   handlers[0x03] = new UltimaLiveRefreshClientViewHandler(pManager);
+  handlers[0x04] = new UltimaLiveBlocksViewRangeHandler(pManager);
+  handlers[0xFD] = new UltimaLiveHashQuery32Handler(pManager);
   handlers[0xFF] = new UltimaLiveHashQueryHandler(pManager);
 
   return handlers;
