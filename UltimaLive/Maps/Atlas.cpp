@@ -227,7 +227,7 @@ void Atlas::onBlocksViewRange(int32_t minBlockX, int32_t maxBlockX, int32_t minB
     uint8_t* pResponse = &response[0];
 
     pResponse[0] = 0x3F;                                               //byte 000              -  cmd
-    *reinterpret_cast<uint16_t*>(pResponse + 1) = 71;                  //byte 001 through 002  -  packet size
+    *reinterpret_cast<uint16_t*>(pResponse + 1) = 23;                  //byte 001 through 002  -  packet size
     *reinterpret_cast<uint32_t*>(pResponse + 3) = htonl(0);     //byte 003 through 006  -  central block number for the query (block that player is standing in)
     *reinterpret_cast<uint32_t*>(pResponse + 7) = htonl(8);            //byte 007 through 010  -  number of statics in the packet (8 for a query response)
     *reinterpret_cast<uint16_t*>(pResponse + 11) = htons(0);           //byte 011 through 012  -  UltimaLive sequence number
@@ -251,11 +251,12 @@ void Atlas::onHashQuery(uint32_t blockNumber, uint8_t mapNumber)
 {
   Logger::g_pLogger->LogPrint("Atlas: Got Hash Query\n");
   std::vector<uint16_t> crcs = GetGroupOfBlockCrcs(mapNumber, blockNumber);
-  std::vector<uint8_t> response(15 + crcs.size() * sizeof(uint16_t), 0);
+  size_t size = 15 + crcs.size() * sizeof(uint16_t);
+  std::vector<uint8_t> response(size, 0);
   uint8_t *pResponse = &response[0];
 
   pResponse[0] = 0x3F;                                               //byte 000              -  cmd
-  *reinterpret_cast<uint16_t*>(pResponse + 1) = 71;                  //byte 001 through 002  -  packet size
+  *reinterpret_cast<uint16_t*>(pResponse + 1) = (uint16_t)size;                  //byte 001 through 002  -  packet size
   *reinterpret_cast<uint32_t*>(pResponse + 3) = htonl(blockNumber);  //byte 003 through 006  -  central block number for the query (block that player is standing in)
   *reinterpret_cast<uint32_t*>(pResponse + 7) = htonl(8);            //byte 007 through 010  -  number of statics in the packet (8 for a query response)
   *reinterpret_cast<uint16_t*>(pResponse + 11) = htons(0);           //byte 011 through 012  -  UltimaLive sequence number
@@ -287,15 +288,16 @@ void Atlas::onHashQuery32(uint32_t blockNumber, uint8_t mapNumber)
 {
     Logger::g_pLogger->LogPrint("Atlas: Got Hash Query\n");
     std::vector<uint32_t> crcs = GetGroupOfBlockCrcs32(mapNumber, blockNumber);
-    std::vector<uint8_t> response(15 + crcs.size() * sizeof(uint32_t), 0);
+    size_t size = 15 + crcs.size() * sizeof(uint32_t);
+    std::vector<uint8_t> response(size, 0);
     uint8_t* pResponse = &response[0];
 
     pResponse[0] = 0x3F;                                               //byte 000              -  cmd
-    *reinterpret_cast<uint16_t*>(pResponse + 1) = 71;                  //byte 001 through 002  -  packet size
+    *reinterpret_cast<uint16_t*>(pResponse + 1) = (uint16_t)size;                  //byte 001 through 002  -  packet size
     *reinterpret_cast<uint32_t*>(pResponse + 3) = htonl(blockNumber);  //byte 003 through 006  -  central block number for the query (block that player is standing in)
     *reinterpret_cast<uint32_t*>(pResponse + 7) = htonl(8);            //byte 007 through 010  -  number of statics in the packet (8 for a query response)
     *reinterpret_cast<uint16_t*>(pResponse + 11) = htons(0);           //byte 011 through 012  -  UltimaLive sequence number
-    pResponse[13] = 0xFF;                                              //byte 013              -  UltimaLive command (0xFF is a block Query Response)
+    pResponse[13] = 0xFD;                                              //byte 013              -  UltimaLive command (0xFD is a block Query32 Response)
     pResponse[14] = mapNumber;                                         //byte 014              -  UltimaLive mapnumber
     //byte 015 through 64   -  25 block CRCs
     for (size_t i = 0; i < crcs.size(); i++)

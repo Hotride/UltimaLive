@@ -44,12 +44,12 @@ UltimaLiveBlocksViewRangeHandler::UltimaLiveBlocksViewRangeHandler(NetworkManage
  */
 bool UltimaLiveBlocksViewRangeHandler::handlePacket(uint8_t* pPacketData)
 {
-  int32_t minBlockX = (int32_t)ntohl(*reinterpret_cast<int16_t*>(&pPacketData[15]));
-  int32_t maxBlockX = (int32_t)ntohl(*reinterpret_cast<int16_t*>(&pPacketData[17]));
-  int32_t minBlockY = (int32_t)ntohl(*reinterpret_cast<int16_t*>(&pPacketData[19]));
-  int32_t maxBlockY = (int32_t)ntohl(*reinterpret_cast<int16_t*>(&pPacketData[21]));
+	int16_t minBlockX = (int16_t)htons(*reinterpret_cast<int16_t*>(&pPacketData[15]));
+	int16_t maxBlockX = (int16_t)htons(*reinterpret_cast<int16_t*>(&pPacketData[17]));
+	int16_t minBlockY = (int16_t)htons(*reinterpret_cast<int16_t*>(&pPacketData[19]));
+	int16_t maxBlockY = (int16_t)htons(*reinterpret_cast<int16_t*>(&pPacketData[21]));
 
-  m_pManager->onBlocksViewRange(minBlockX, maxBlockX, minBlockY, maxBlockY);
+	m_pManager->onBlocksViewRange(minBlockX, maxBlockX, minBlockY, maxBlockY);
 
-  return false;
+	return false;
 }

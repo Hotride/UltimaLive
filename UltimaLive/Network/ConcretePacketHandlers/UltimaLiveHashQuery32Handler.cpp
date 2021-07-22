@@ -46,7 +46,7 @@ bool UltimaLiveHashQuery32Handler::handlePacket(uint8_t* pPacketData)
 {
   uint32_t blockNum = ntohl(*reinterpret_cast<uint32_t*>(&pPacketData[3]));
   uint8_t mapNum = pPacketData[14];
-  m_pManager->onBlockQueryRequest(blockNum, mapNum);
+  m_pManager->onBlockQuery32Request(blockNum, mapNum);
 
   return false;
 }
