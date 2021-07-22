@@ -115,7 +115,8 @@ Atlas::Atlas()
   m_shardIdentifier(),
   m_firstMapLoad(true)
 {
-  //do nothing
+    m_crcCache.resize(896 * 512, 0xFFFF);
+    m_crc32Cache.resize(896 * 512, 0xFFFFFFFF);
 }
 
 /**
@@ -160,6 +161,12 @@ void Atlas::LoadMap(uint8_t map)
     definition.mapWrapWidthInTiles = m_mapDefinitions[map].mapWrapWidthInTiles;
     definition.mapWrapHeightInTiles = m_mapDefinitions[map].mapWrapHeightInTiles;
 
+    m_crcCache.clear();
+    m_crc32Cache.clear();
+
+    m_crcCache.resize((definition.mapWidthInTiles / 8) * (definition.mapHeightInTiles / 8), 0xFFFF);
+    m_crc32Cache.resize((definition.mapWidthInTiles / 8) * (definition.mapHeightInTiles / 8), 0xFFFFFFFF);
+
     m_pClient->SetMapDimensions(definition);
     m_pFileManager->LoadMap(map);
     m_currentMap = map;
@@ -189,6 +196,8 @@ void Atlas::onUpdateStatics(uint8_t mapNumber, uint32_t blockNumber, uint8_t* pD
 {
   Logger::g_pLogger->LogPrint("Block: %i Map Number: %i Length: %i\n", blockNumber, mapNumber, length);
   m_pFileManager->writeStaticsBlock(mapNumber, blockNumber, pData, length);
+  m_crcCache[blockNumber] = 0xFFFF;
+  m_crc32Cache[blockNumber] = 0xFFFFFFFF;
   m_pClient->refreshClientStatics(blockNumber);
 }
 
@@ -202,6 +211,8 @@ void Atlas::onUpdateStatics(uint8_t mapNumber, uint32_t blockNumber, uint8_t* pD
 void Atlas::onUpdateLand(uint8_t mapNumber, uint32_t blockNumber, uint8_t* pLandData)
 {
   m_pFileManager->updateLandBlock(mapNumber, blockNumber, pLandData);
+  m_crcCache[blockNumber] = 0xFFFF;
+  m_crc32Cache[blockNumber] = 0xFFFFFFFF;
   m_pClient->refreshClientLand();
 }
 
@@ -605,7 +616,12 @@ std::vector<uint16_t> Atlas::GetGroupOfBlockCrcs(uint32_t mapNumber, uint32_t bl
 
           if (currentBlock >= 0 && currentBlock <= (mapHeightInBlocks * mapWidthInBlocks))
           {
-            pCrcs[((x + absOffsetX) * m_BlocksHeight) + (y + absOffsetY)] = getBlockCrc(mapNumber, currentBlock);
+              uint16_t &currentCrc = m_crcCache[currentBlock];
+
+              if (currentCrc == 0xFFFF)
+                  currentCrc = getBlockCrc(mapNumber, currentBlock);
+
+              pCrcs[((x + absOffsetX) * m_BlocksHeight) + (y + absOffsetY)] = currentCrc;
           }
         }
       }
@@ -689,7 +705,12 @@ std::vector<uint32_t> Atlas::GetGroupOfBlockCrcs32(uint32_t mapNumber, uint32_t 
 
                     if (currentBlock >= 0 && currentBlock <= (mapHeightInBlocks * mapWidthInBlocks))
                     {
-                        pCrcs[((x + absOffsetX) * m_BlocksHeight) + (y + absOffsetY)] = getBlockCrc32(mapNumber, currentBlock);
+                        uint32_t &currentCrc = m_crc32Cache[currentBlock];
+
+                        if (currentCrc == 0xFFFFFFFF)
+                            currentCrc = getBlockCrc32(mapNumber, currentBlock);
+
+                        pCrcs[((x + absOffsetX) * m_BlocksHeight) + (y + absOffsetY)] = currentCrc;
                     }
                 }
             }

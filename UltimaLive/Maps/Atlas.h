@@ -69,6 +69,9 @@ class Atlas
       int32_t m_BlocksWidth = 5;
       int32_t m_BlocksHeight = 5;
 
+      std::vector<uint16_t> m_crcCache;
+      std::vector<uint32_t> m_crc32Cache;
+
     void onBeforeMapChange(uint8_t& rMap);
     void onMapChange(uint8_t& rMap);
 
