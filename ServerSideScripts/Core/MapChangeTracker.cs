@@ -84,10 +84,10 @@ namespace UltimaLive
         {
             Console.WriteLine("Loading Ultima Live map changes");
 
-      if (!Directory.Exists(UltimaLiveSettings.UltimaLiveMapChangesSavePath))
-        Directory.CreateDirectory(UltimaLiveSettings.UltimaLiveMapChangesSavePath);
+            if (!Directory.Exists(UltimaLiveSettings.UltimaLiveMapChangesSavePath))
+                Directory.CreateDirectory(UltimaLiveSettings.UltimaLiveMapChangesSavePath);
 
-      string[] filePaths = Directory.GetFiles(UltimaLiveSettings.UltimaLiveMapChangesSavePath, "*.live");
+            string[] filePaths = Directory.GetFiles(UltimaLiveSettings.UltimaLiveMapChangesSavePath, "*.live");
             List<string> staticsPaths = new List<string>();
             List<string> landPaths = new List<string>();
 
@@ -110,13 +110,13 @@ namespace UltimaLive
             {
                 BinaryReader reader = new BinaryReader(File.Open(Path.Combine(Core.BaseDirectory, s), FileMode.Open));
                 try
-				{
-					reader.BaseStream.Seek(0, SeekOrigin.Begin);
-					int MapNumber = reader.ReadUInt16();
+                {
+                    reader.BaseStream.Seek(0, SeekOrigin.Begin);
+                    int MapNumber = reader.ReadUInt16();
 
-					while (reader.BaseStream.Position < reader.BaseStream.Length)
-					{
-                        
+                    while (reader.BaseStream.Position < reader.BaseStream.Length)
+                    {
+
                         int x = (int)reader.ReadInt16();
                         int y = (int)reader.ReadInt16();
                         LandTile[] blocktiles = new LandTile[64];
@@ -126,26 +126,26 @@ namespace UltimaLive
                             short id = reader.ReadInt16();
                             sbyte z = reader.ReadSByte();
                             LandTile lt = new LandTile(id, z);
-							blocktiles[j] = lt;
-						}
+                            blocktiles[j] = lt;
+                        }
 
-						List<int> associated;
-						MapRegistry.MapAssociations.TryGetValue(MapNumber, out associated);
-						foreach(int integer in associated)
-						{
-							Map map = Map.Maps[integer];
-							TileMatrix tm = map.Tiles;
-							tm.SetLandBlock(x, y, blocktiles);
-						}
-					}
-				}
-        catch
+                        List<int> associated;
+                        MapRegistry.MapAssociations.TryGetValue(MapNumber, out associated);
+                        foreach (int integer in associated)
+                        {
+                            Map map = Map.Maps[integer];
+                            TileMatrix tm = map.Tiles;
+                            tm.SetLandBlock(x, y, blocktiles);
+                        }
+                    }
+                }
+                catch
                 {
                     Console.WriteLine("An error occured reading land changes at " + reader.BaseStream.Position);
                 }
                 finally
                 {
-                   reader.Close();
+                    reader.Close();
                 }
             }
 
@@ -157,12 +157,12 @@ namespace UltimaLive
                 FileInfo mapFile = new FileInfo(Path.Combine(Core.BaseDirectory, s));
                 BinaryReader reader = new BinaryReader(File.Open(Path.Combine(Core.BaseDirectory, s), FileMode.Open));
                 try
-				{
-					reader.BaseStream.Seek(0, SeekOrigin.Begin);
-					int MapNumber = reader.ReadUInt16();
+                {
+                    reader.BaseStream.Seek(0, SeekOrigin.Begin);
+                    int MapNumber = reader.ReadUInt16();
 
-					while (reader.BaseStream.Position < reader.BaseStream.Length)
-					{
+                    while (reader.BaseStream.Position < reader.BaseStream.Length)
+                    {
 
                         int blockX = (int)reader.ReadInt16();
                         int blockY = (int)reader.ReadInt16();
@@ -208,20 +208,20 @@ namespace UltimaLive
                                         newblockOfTiles[i][j][k] = blockStatics[p][k];
                                     }
                                 }
-							}
-						}
+                            }
+                        }
 
-						List<int> associated;
-						MapRegistry.MapAssociations.TryGetValue(MapNumber, out associated);
-						foreach(int integer in associated)
-						{
-							Map map = Map.Maps[integer];
-							TileMatrix tm = map.Tiles;
-							tm.SetStaticBlock(blockX, blockY, newblockOfTiles);
-						}
-					}
-				}
-        catch
+                        List<int> associated;
+                        MapRegistry.MapAssociations.TryGetValue(MapNumber, out associated);
+                        foreach (int integer in associated)
+                        {
+                            Map map = Map.Maps[integer];
+                            TileMatrix tm = map.Tiles;
+                            tm.SetStaticBlock(blockX, blockY, newblockOfTiles);
+                        }
+                    }
+                }
+                catch
                 {
                     Console.WriteLine("An error occured reading land changes.");
                 }
@@ -234,8 +234,8 @@ namespace UltimaLive
 
         public static void OnSave(WorldSaveEventArgs e)
         {
-      if (!Directory.Exists(UltimaLiveSettings.UltimaLiveMapChangesSavePath))
-        Directory.CreateDirectory(UltimaLiveSettings.UltimaLiveMapChangesSavePath);
+            if (!Directory.Exists(UltimaLiveSettings.UltimaLiveMapChangesSavePath))
+                Directory.CreateDirectory(UltimaLiveSettings.UltimaLiveMapChangesSavePath);
 
             DateTime now = DateTime.Now;
             string Stamp = string.Format("{0}-{1}-{2}-{3}-{4}-{5}", now.Year, now.Month.ToString("00"), now.Day.ToString("00"), now.Hour.ToString("00"), now.Minute.ToString("00"), now.Second.ToString("00"));
@@ -251,8 +251,8 @@ namespace UltimaLive
                     if (keyColl.Count > 0)
                     {
                         string filename = string.Format("map{0}-{1}.live", kvp.Key, Stamp);
-            Console.WriteLine(Path.Combine(UltimaLiveSettings.UltimaLiveMapChangesSavePath, filename));
-            GenericWriter writer = new BinaryFileWriter(Path.Combine(UltimaLiveSettings.UltimaLiveMapChangesSavePath, filename), true);
+                        Console.WriteLine(Path.Combine(UltimaLiveSettings.UltimaLiveMapChangesSavePath, filename));
+                        GenericWriter writer = new BinaryFileWriter(Path.Combine(UltimaLiveSettings.UltimaLiveMapChangesSavePath, filename), true);
                         writer.Write((UInt16)kvp.Key);
 
                         foreach (Point2D p in keyColl)
@@ -274,7 +274,7 @@ namespace UltimaLive
                     if (keyColl.Count > 0)
                     {
                         string filename = string.Format("statics{0}-{1}.live", kvp.Key, Stamp);
-            GenericWriter writer = new BinaryFileWriter(Path.Combine(UltimaLiveSettings.UltimaLiveMapChangesSavePath, filename), true);
+                        GenericWriter writer = new BinaryFileWriter(Path.Combine(UltimaLiveSettings.UltimaLiveMapChangesSavePath, filename), true);
                         writer.Write((UInt16)kvp.Key);
 
                         foreach (Point2D p in keyColl)
@@ -309,7 +309,7 @@ namespace UltimaLive
                     }
                     m_StaticsChanges[kvp.Key].Clear();
                 }
-        catch
+                catch
                 {
                     Console.WriteLine("Key: " + kvp.Key);
                 }

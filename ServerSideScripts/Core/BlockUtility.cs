@@ -32,7 +32,7 @@ namespace UltimaLive
         {
             Map m = Map.Maps[mapNumber];
             TileMatrix tm = m.Tiles;
-            return GetLandData( new Point2D(blockNumber / tm.BlockHeight, blockNumber % tm.BlockHeight), mapNumber);
+            return GetLandData(new Point2D(blockNumber / tm.BlockHeight, blockNumber % tm.BlockHeight), mapNumber);
         }
 
         public static byte[] GetLandData(Point2D blockCoordinates, Int32 mapNumber)
@@ -42,7 +42,7 @@ namespace UltimaLive
             Map map = Map.Maps[mapNumber];
             TileMatrix tm = map.Tiles;
             LandTile[] land = tm.GetLandBlock(blockCoordinates.X, blockCoordinates.Y);
-            for(int i = 0; i < land.Length; i++) //64 * 3 = 192 bytes
+            for (int i = 0; i < land.Length; i++) //64 * 3 = 192 bytes
             {
                 landData[(i * 3)] = (byte)(((ushort)land[i].ID) & 0x00FF);
                 landData[(i * 3) + 1] = (byte)((((ushort)land[i].ID) & 0xFF00) >> 8);
@@ -173,39 +173,39 @@ namespace UltimaLive
             return blockBytes;
         }
 
-    public static int CompareStaticTiles(StaticTile b, StaticTile a)
-		{
-			int retVal = a.Z.CompareTo(b.Z);
-      if (retVal == 0)//same Z, lower z has higher priority now, it's correct this way, tested locally
-			{
-				StaticTile[] sts = ClientFileExport.WorkMap.Tiles.GetStaticTiles(a.X, a.Y);
-				for(int i=0; i<sts.Length; i++)
-        {//we compare hashcodes for easyness, instead of comparing a bunch of properties, order has been verified to work in exportclientfiles.
-					int hash=sts[i].GetHashCode();
-					if(hash==a.GetHashCode())
-					{
-            retVal = 1;
-						break;
-					}
-					else if(hash==b.GetHashCode())
-					{
-            retVal = -1;
-						break;
-					}
-				}
-			}
-      //We leave this as is, but it shouldn't happen anyway if we have same Z
-			if(retVal==0)
-      {
-				retVal = a.ID.CompareTo(b.ID);
-      }
+        public static int CompareStaticTiles(StaticTile b, StaticTile a)
+        {
+            int retVal = a.Z.CompareTo(b.Z);
+            if (retVal == 0)//same Z, lower z has higher priority now, it's correct this way, tested locally
+            {
+                StaticTile[] sts = ClientFileExport.WorkMap.Tiles.GetStaticTiles(a.X, a.Y);
+                for (int i = 0; i < sts.Length; i++)
+                {//we compare hashcodes for easyness, instead of comparing a bunch of properties, order has been verified to work in exportclientfiles.
+                    int hash = sts[i].GetHashCode();
+                    if (hash == a.GetHashCode())
+                    {
+                        retVal = 1;
+                        break;
+                    }
+                    else if (hash == b.GetHashCode())
+                    {
+                        retVal = -1;
+                        break;
+                    }
+                }
+            }
+            //We leave this as is, but it shouldn't happen anyway if we have same Z
+            if (retVal == 0)
+            {
+                retVal = a.ID.CompareTo(b.ID);
+            }
 
-			if(retVal==0)
-      {
-				retVal = a.Hue.CompareTo(b.Hue);
-      }
+            if (retVal == 0)
+            {
+                retVal = a.Hue.CompareTo(b.Hue);
+            }
 
-			return retVal;
-		}
-	}
+            return retVal;
+        }
+    }
 }

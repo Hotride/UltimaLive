@@ -107,7 +107,7 @@ namespace UltimaLive.Network
 
         public void WriteDataToStream(byte[] staticsData, int blockNumber, int mapID)
         {
-                                                                  //byte 000         -  cmd
+            //byte 000         -  cmd
             this.EnsureCapacity(15 + staticsData.Length);         //byte 001 to 002  -  packet size
             m_Stream.Write((uint)blockNumber);                    //byte 003 to 006  -  block number
             m_Stream.Write((int)staticsData.Length / 7);          //byte 007 to 010  -  number of statics in packet
@@ -124,7 +124,7 @@ namespace UltimaLive.Network
 
     #region Query Client Hash Packet
     //This is now using a CRC check instead of versions
-    public class QueryClientHash : Packet 
+    public class QueryClientHash : Packet
     {
         public QueryClientHash(Mobile m)
             : base(0x3F)
@@ -134,7 +134,7 @@ namespace UltimaLive.Network
             int blocknum = (((m.Location.X >> 3) * tm.BlockHeight) + (m.Location.Y >> 3));
             //Console.WriteLine(String.Format("Block Query Hash: {0}", blocknum));
 
-                                                        //byte 000         -  cmd
+            //byte 000         -  cmd
             this.EnsureCapacity(15);                    //byte 001 to 002  -  packet size
             m_Stream.Write((UInt32)blocknum);           //byte 003 to 006  -  central block number for the query (block that player is standing in)
             m_Stream.Write((Int32)0);                   //byte 007 to 010  -  number of statics in the packet (0 for a query)
@@ -147,7 +147,7 @@ namespace UltimaLive.Network
 
     #region Query Client Hash32 Packet
     //This is now using a CRC32 check instead of versions
-    public class QueryClientHash32 : Packet 
+    public class QueryClientHash32 : Packet
     {
         public QueryClientHash32(Mobile m)
             : base(0x3F)
@@ -157,7 +157,7 @@ namespace UltimaLive.Network
             int blocknum = (((m.Location.X >> 3) * tm.BlockHeight) + (m.Location.Y >> 3));
             //Console.WriteLine(String.Format("Block Query Hash: {0}", blocknum));
 
-                                                        //byte 000         -  cmd
+            //byte 000         -  cmd
             this.EnsureCapacity(15);                    //byte 001 to 002  -  packet size
             m_Stream.Write((UInt32)blocknum);           //byte 003 to 006  -  central block number for the query (block that player is standing in)
             m_Stream.Write((Int32)0);                   //byte 007 to 010  -  number of statics in the packet (0 for a query)
@@ -169,7 +169,7 @@ namespace UltimaLive.Network
     #endregion
 
     #region Blocks View Range Packet
-    public class BlocksViewRange : Packet 
+    public class BlocksViewRange : Packet
     {
         public BlocksViewRange(Mobile m, short minBlockX, short maxBlockX, short minBlockY, short maxBlockY)
             : base(0x3F)
@@ -179,7 +179,7 @@ namespace UltimaLive.Network
             int blocknum = (((m.Location.X >> 3) * tm.BlockHeight) + (m.Location.Y >> 3));
             //Console.WriteLine(String.Format("Block Query Hash: {0}", blocknum));
 
-                                                        //byte 000         -  cmd
+            //byte 000         -  cmd
             this.EnsureCapacity(23);                    //byte 001 to 002  -  packet size
             m_Stream.Write((UInt32)blocknum);           //byte 003 to 006  -  central block number for the query (block that player is standing in)
             m_Stream.Write((Int32)0);                   //byte 007 to 010  -  number of statics in the packet (0 for a query)
@@ -209,10 +209,10 @@ namespace UltimaLive.Network
             if (length - (count * 7) > 0) //
             {
                 count++;
-                padding = (count * 7) - length; 
+                padding = (count * 7) - length;
             }
-                                                        //byte 000 to 015  -  The first 15 bytes of this packet are always the same
-                                                        //byte 000         -  cmd
+            //byte 000 to 015  -  The first 15 bytes of this packet are always the same
+            //byte 000         -  cmd
             this.EnsureCapacity(15 + length);           //byte 001 to 002  -  packet size
             m_Stream.Write((uint)0x00);                 //byte 003 to 006  -  block number, doesn't really apply in this case
             m_Stream.Write((int)count);                 //byte 007 to 010  -  number of statics in the packet, in this case its calculated to 
@@ -279,7 +279,7 @@ namespace UltimaLive.Network
         public void WriteDataToStream(byte[] landData, int blockNumber, int mapID)
         {
             //Console.WriteLine(string.Format("Packet Constructor land block coords ({0},{1})", blockCoords.X, blockCoords.Y));
-                                                               //byte 000              -  cmd
+            //byte 000              -  cmd
             m_Stream.Write((int)blockNumber);                     //byte 001 through 004  -  blocknum
             m_Stream.Write(landData, 0, landData.Length);      //byte 005 through 196  -  land data
             m_Stream.Write((byte)0x00);                        //byte 197              -  padding
@@ -318,7 +318,7 @@ namespace UltimaLive.Network
             }
             int packetSize = 16 + (targetObjects.Count * 10);
 
-                                                        //byte 000              -  cmd
+            //byte 000              -  cmd
             this.EnsureCapacity(packetSize);            //byte 001 through 002  -  packet size
             m_Stream.Write(allowGroundByte);            //byte 003              -  Allow Ground
             m_Stream.Write((int)m.Serial);              //byte 004 through 007  -  target serial
@@ -349,8 +349,8 @@ namespace UltimaLive.Network
             //4 byte block num (0x01)
             //4 byte statics count
             //4 byte extra
-                                                    //byte 000 to 015  -  The first 15 bytes of this packet are always the same
-                                                    //byte 000         -  cmd
+            //byte 000 to 015  -  The first 15 bytes of this packet are always the same
+            //byte 000         -  cmd
             this.EnsureCapacity(43);                               //byte 001 to 002  -  packet size
             m_Stream.Write((UInt32)0x01);           //byte 003 to 006  -  block number, doesn't really apply in this case
             m_Stream.Write((UInt32)4);                             //byte 007 to 010  -  number of statics in the packet - 0 in this case
@@ -359,16 +359,16 @@ namespace UltimaLive.Network
             m_Stream.Write((byte)0x00);             //byte 014         -  UltimaLive mapnumber, doesn't apply in this case
             if (UltimaLiveSettings.UNIQUE_SHARD_IDENTIFIER.Length < 28)
             {
-              m_Stream.WriteAsciiFixed(UltimaLiveSettings.UNIQUE_SHARD_IDENTIFIER, UltimaLiveSettings.UNIQUE_SHARD_IDENTIFIER.Length);                                       //byte 015 to 042  -  shard identifier
-              int remainingLength = 28 - UltimaLiveSettings.UNIQUE_SHARD_IDENTIFIER.Length;
-              for (int i = 0; i < remainingLength; ++i)
-              {
-                m_Stream.Write((byte)0x00);
-              }
+                m_Stream.WriteAsciiFixed(UltimaLiveSettings.UNIQUE_SHARD_IDENTIFIER, UltimaLiveSettings.UNIQUE_SHARD_IDENTIFIER.Length);                                       //byte 015 to 042  -  shard identifier
+                int remainingLength = 28 - UltimaLiveSettings.UNIQUE_SHARD_IDENTIFIER.Length;
+                for (int i = 0; i < remainingLength; ++i)
+                {
+                    m_Stream.Write((byte)0x00);
+                }
             }
             else
             {
-              m_Stream.WriteAsciiFixed(UltimaLiveSettings.UNIQUE_SHARD_IDENTIFIER.Substring(0, 28), 28);
+                m_Stream.WriteAsciiFixed(UltimaLiveSettings.UNIQUE_SHARD_IDENTIFIER.Substring(0, 28), 28);
             }
         }
     }
@@ -381,7 +381,7 @@ namespace UltimaLive.Network
         public RefreshClientView()
             : base(0x3F)
         {
-                                                        //byte 000         -  cmd
+            //byte 000         -  cmd
             this.EnsureCapacity(15);                    //byte 001 to 002  -  packet size
             m_Stream.Write((UInt32)0);                  //byte 003 to 006  -  central block number for the query (block that player is standing in)
             m_Stream.Write((Int32)0);                   //byte 007 to 010  -  number of statics in the packet (0 for a query)

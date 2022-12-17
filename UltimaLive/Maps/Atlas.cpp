@@ -537,7 +537,7 @@ uint32_t Atlas::calculateCrc32(uint8_t* pBlockData, uint8_t* pStaticsData, uint3
         }
     }
 
-    return (uint32_t)(currentCrc & 0xFFFFFFFF);
+    return (uint32_t)(currentCrc ^ 0xFFFFFFFF);
 }
 
 int32_t Atlas::BLOCK_POSITION_OFFSETS[5] = { -2, -1, 0, 1, 2 };

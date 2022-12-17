@@ -69,8 +69,8 @@ namespace UltimaLive
             get { return m_MapNumber; }
         }
 
-    public MapOperationSeries(IMapOperation startingChange, int mapNumber)
-      : base(-1, -1, mapNumber)
+        public MapOperationSeries(IMapOperation startingChange, int mapNumber)
+          : base(-1, -1, mapNumber)
         {
             m_Changes = new List<IMapOperation>();
             m_Changes.Add(startingChange);
@@ -85,7 +85,7 @@ namespace UltimaLive
                 blockUpdateChain = new Dictionary<int, LocalUpdateFlags>();
                 sendoutUpdates = true;
             }
-            
+
             foreach (IMapOperation mc in m_Changes)
             {
                 mc.DoOperation(blockUpdateChain);
@@ -97,7 +97,7 @@ namespace UltimaLive
                 {
                     if (kvp.Key >= 0)
                     {
-                        BaseMapOperation.SendOutLocalUpdates( m_MapNumber, kvp.Key, kvp.Value);
+                        BaseMapOperation.SendOutLocalUpdates(m_MapNumber, kvp.Key, kvp.Value);
                     }
                 }
             }
@@ -145,12 +145,12 @@ namespace UltimaLive
             {
                 if ((flags & LocalUpdateFlags.Terrain) == LocalUpdateFlags.Terrain)
                 {
-                  m.Send(new UltimaLive.Network.UpdateTerrainPacket(new Point2D(x >> 3, y >> 3), m));
+                    m.Send(new UltimaLive.Network.UpdateTerrainPacket(new Point2D(x >> 3, y >> 3), m));
                 }
 
                 if ((flags & LocalUpdateFlags.Statics) == LocalUpdateFlags.Statics)
                 {
-                  m.Send(new UltimaLive.Network.UpdateStaticsPacket(new Point2D(x >> 3, y >> 3), m));
+                    m.Send(new UltimaLive.Network.UpdateStaticsPacket(new Point2D(x >> 3, y >> 3), m));
                 }
                 //m.Send(new RefreshClientView());
             }
@@ -174,7 +174,7 @@ namespace UltimaLive
             get { return m_BlockNumber; }
         }
 
-        public virtual  int MapNumber
+        public virtual int MapNumber
         {
             get { return m_MapNumber; }
         }
@@ -186,7 +186,7 @@ namespace UltimaLive
 
         public virtual void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
         {
-            CRC.InvalidateBlockCRC(m_MapNumber, m_BlockNumber); 
+            CRC.InvalidateBlockCRC(m_MapNumber, m_BlockNumber);
         }
         #endregion
 
@@ -249,7 +249,7 @@ namespace UltimaLive
             {
                 if (blockUpdateChain.ContainsKey(m_BlockNumber))
                 {
-                    blockUpdateChain[m_BlockNumber] = blockUpdateChain[m_BlockNumber] | LocalUpdateFlags.Statics;                    
+                    blockUpdateChain[m_BlockNumber] = blockUpdateChain[m_BlockNumber] | LocalUpdateFlags.Statics;
                 }
                 else
                 {
@@ -265,39 +265,39 @@ namespace UltimaLive
 
         protected StaticTile[] getExistingTiles()
         {
-          return m_Matrix.GetStaticTiles(m_Location.X, m_Location.Y);
+            return m_Matrix.GetStaticTiles(m_Location.X, m_Location.Y);
         }
 
         protected int lookupExistingStatic(ref StaticTile existingTile)
         {
-          int tileIndex = -1;
+            int tileIndex = -1;
 
-          if (m_StaticTarget != null)
+            if (m_StaticTarget != null)
             {
-            int z = m_StaticTarget.Z - TileData.ItemTable[m_StaticTarget.ItemID].CalcHeight;
-            StaticTile[] staticTiles = m_Matrix.GetStaticTiles(m_Location.X, m_Location.Y);
+                int z = m_StaticTarget.Z - TileData.ItemTable[m_StaticTarget.ItemID].CalcHeight;
+                StaticTile[] staticTiles = m_Matrix.GetStaticTiles(m_Location.X, m_Location.Y);
 
-            for (int i = 0; i < staticTiles.Length; i++)
+                for (int i = 0; i < staticTiles.Length; i++)
                 {
-              if (staticTiles[i].Z == z && staticTiles[i].ID == m_StaticTarget.ItemID)
+                    if (staticTiles[i].Z == z && staticTiles[i].ID == m_StaticTarget.ItemID)
                     {
-                tileIndex = i;
+                        tileIndex = i;
                     }
                 }
 
-            if (tileIndex >= 0)
+                if (tileIndex >= 0)
                 {
-              existingTile = staticTiles[tileIndex];
-            }
-          }
-
-          return tileIndex;
+                    existingTile = staticTiles[tileIndex];
                 }
+            }
+
+            return tileIndex;
+        }
 
         public ExistingStaticOperation(int mapNum, StaticTarget targ)
             : base(targ.X, targ.Y, mapNum)
-            {
-          m_StaticTarget = targ;
+        {
+            m_StaticTarget = targ;
         }
 
         public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
@@ -306,23 +306,23 @@ namespace UltimaLive
         }
     }
 
-  #region Static X/Y movement by Elm
-  public class IncStaticX : MoveStatic
-  {
-    public IncStaticX(int mapNum, StaticTarget targ, int xChange)
-      : base(mapNum, targ, targ.X + xChange, targ.Y)
+    #region Static X/Y movement by Elm
+    public class IncStaticX : MoveStatic
     {
+        public IncStaticX(int mapNum, StaticTarget targ, int xChange)
+          : base(mapNum, targ, targ.X + xChange, targ.Y)
+        {
+        }
     }
-  }
 
-  public class IncStaticY : MoveStatic
-  {
-    public IncStaticY(int mapNum, StaticTarget targ, int yChange)
-      : base(mapNum, targ, targ.X, targ.Y + yChange)
+    public class IncStaticY : MoveStatic
     {
+        public IncStaticY(int mapNum, StaticTarget targ, int yChange)
+          : base(mapNum, targ, targ.X, targ.Y + yChange)
+        {
+        }
     }
-  }
-  #endregion
+    #endregion
 
     public class AddStatic : StaticOperation
     {
@@ -330,8 +330,8 @@ namespace UltimaLive
         protected int m_NewAltitude;
         protected int m_Hue;
 
-      public AddStatic(int mapNumber, int newID, int newAltitude, int x, int y, int hue)
-        : base(x, y, mapNumber)
+        public AddStatic(int mapNumber, int newID, int newAltitude, int x, int y, int hue)
+          : base(x, y, mapNumber)
         {
             m_NewID = newID;
             m_NewAltitude = newAltitude;
@@ -340,8 +340,8 @@ namespace UltimaLive
 
         public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
         {
-        StaticTile[] newTileList = new StaticTile[m_Block[Location.X & 0x7][Location.Y & 0x7].Length + 1];
-        Array.Copy(m_Block[Location.X & 0x7][Location.Y & 0x7], newTileList, m_Block[Location.X & 0x7][Location.Y & 0x7].Length);
+            StaticTile[] newTileList = new StaticTile[m_Block[Location.X & 0x7][Location.Y & 0x7].Length + 1];
+            Array.Copy(m_Block[Location.X & 0x7][Location.Y & 0x7], newTileList, m_Block[Location.X & 0x7][Location.Y & 0x7].Length);
             newTileList[newTileList.Length - 1] = new StaticTile((ushort)m_NewID, (sbyte)m_NewAltitude);
             newTileList[newTileList.Length - 1].Hue = m_Hue;
             m_Block[Location.X & 0x7][Location.Y & 0x7] = newTileList;
@@ -358,24 +358,24 @@ namespace UltimaLive
             m_Change = altitudeChange;
         }
 
-		public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
-		{
-        StaticTile[] tiles = getExistingTiles();
-
-        if (tiles == null || tiles.Length == 0)
-            {			
-			  return;
-			}
-			
-        StaticTile existingTile = new StaticTile();
-        int idx = lookupExistingStatic(ref existingTile);
-
-        if (idx >= 0)
+        public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
         {
-          tiles[idx].Set((UInt16)existingTile.ID, (sbyte)(m_Change + existingTile.Z));
+            StaticTile[] tiles = getExistingTiles();
+
+            if (tiles == null || tiles.Length == 0)
+            {
+                return;
+            }
+
+            StaticTile existingTile = new StaticTile();
+            int idx = lookupExistingStatic(ref existingTile);
+
+            if (idx >= 0)
+            {
+                tiles[idx].Set((UInt16)existingTile.ID, (sbyte)(m_Change + existingTile.Z));
+            }
+            base.DoOperation(blockUpdateChain);
         }
-			base.DoOperation(blockUpdateChain);
-		}
     }
 
     public class SetStaticAltitude : ExistingStaticOperation
@@ -389,20 +389,20 @@ namespace UltimaLive
 
         public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
         {
-          StaticTile[] tiles = getExistingTiles();
+            StaticTile[] tiles = getExistingTiles();
 
-          if (tiles == null || tiles.Length == 0)
-          {
-            return;
-          }
+            if (tiles == null || tiles.Length == 0)
+            {
+                return;
+            }
 
-          StaticTile existingTile = new StaticTile(); 
-          int idx = lookupExistingStatic(ref existingTile);
+            StaticTile existingTile = new StaticTile();
+            int idx = lookupExistingStatic(ref existingTile);
 
-          if (idx >= 0)
-          {
-            tiles[idx].Set((UInt16)existingTile.ID, (sbyte)(m_NewAltitude - TileData.ItemTable[existingTile.ID].CalcHeight));
-          }
+            if (idx >= 0)
+            {
+                tiles[idx].Set((UInt16)existingTile.ID, (sbyte)(m_NewAltitude - TileData.ItemTable[existingTile.ID].CalcHeight));
+            }
             base.DoOperation(blockUpdateChain);
         }
     }
@@ -416,77 +416,77 @@ namespace UltimaLive
             m_NewID = newID;
         }
 
-		public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
-		{
-        StaticTile[] tiles = getExistingTiles();
-
-        if (tiles == null || tiles.Length == 0)
+        public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
         {
-          return;
-        }
+            StaticTile[] tiles = getExistingTiles();
 
-        StaticTile existingTile = new StaticTile();
-        int idx = lookupExistingStatic(ref existingTile);
+            if (tiles == null || tiles.Length == 0)
+            {
+                return;
+            }
 
-        if (idx >= 0)
-        {
-          tiles[idx].Set((ushort)m_NewID, (sbyte)(existingTile.Z - TileData.ItemTable[existingTile.ID].CalcHeight));
+            StaticTile existingTile = new StaticTile();
+            int idx = lookupExistingStatic(ref existingTile);
+
+            if (idx >= 0)
+            {
+                tiles[idx].Set((ushort)m_NewID, (sbyte)(existingTile.Z - TileData.ItemTable[existingTile.ID].CalcHeight));
+            }
+            base.DoOperation(blockUpdateChain);
+
         }
-			base.DoOperation(blockUpdateChain);
-        
-		}
     }
 
     public class SetStaticHue : ExistingStaticOperation
     {
-      protected int m_NewHue;
-      public SetStaticHue(int mapNum, StaticTarget targ, int newHue)
-        : base(mapNum, targ)
-      {
-        m_NewHue = newHue;
-      }
+        protected int m_NewHue;
+        public SetStaticHue(int mapNum, StaticTarget targ, int newHue)
+          : base(mapNum, targ)
+        {
+            m_NewHue = newHue;
+        }
 
-      public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
-      {
-        StaticTile[] tiles = getExistingTiles();
-        StaticTile existingTile = new StaticTile();
-        int idx = lookupExistingStatic(ref existingTile);
+        public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
+        {
+            StaticTile[] tiles = getExistingTiles();
+            StaticTile existingTile = new StaticTile();
+            int idx = lookupExistingStatic(ref existingTile);
 
-      if (idx >= 0)
-      {
-        tiles[idx].Hue = m_NewHue;
-        base.DoOperation(blockUpdateChain);
-      }
+            if (idx >= 0)
+            {
+                tiles[idx].Hue = m_NewHue;
+                base.DoOperation(blockUpdateChain);
+            }
+        }
     }
-  }
 
     public class MoveStatic : ExistingStaticOperation
     {
-      protected int m_destinationX;
-      protected int m_destinationY;
+        protected int m_destinationX;
+        protected int m_destinationY;
 
-      public MoveStatic(int mapNum, StaticTarget targetOfStaticToMove, int destinationX, int destinationY)
-        : base(mapNum, targetOfStaticToMove)
-      {
-        m_destinationX = destinationX;
-        m_destinationY = destinationY;
-      }
-
-      public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
-      {
-        StaticTile existingTile = new StaticTile();
-        int idx = lookupExistingStatic(ref existingTile);
-
-        if (idx >= 0)
+        public MoveStatic(int mapNum, StaticTarget targetOfStaticToMove, int destinationX, int destinationY)
+          : base(mapNum, targetOfStaticToMove)
         {
-        AddStatic addStatic = new AddStatic(m_MapNumber, existingTile.ID, (sbyte)existingTile.Z, m_destinationX, m_destinationY, existingTile.Hue);
-        DeleteStatic delStatic = new DeleteStatic(m_MapNumber, m_StaticTarget);
+            m_destinationX = destinationX;
+            m_destinationY = destinationY;
+        }
 
-        MapOperationSeries moveSeries = new MapOperationSeries(addStatic, m_MapNumber);
-        moveSeries.Add(delStatic);
-        moveSeries.DoOperation(blockUpdateChain);
-      }
-    }
+        public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
+        {
+            StaticTile existingTile = new StaticTile();
+            int idx = lookupExistingStatic(ref existingTile);
+
+            if (idx >= 0)
+            {
+                AddStatic addStatic = new AddStatic(m_MapNumber, existingTile.ID, (sbyte)existingTile.Z, m_destinationX, m_destinationY, existingTile.Hue);
+                DeleteStatic delStatic = new DeleteStatic(m_MapNumber, m_StaticTarget);
+
+                MapOperationSeries moveSeries = new MapOperationSeries(addStatic, m_MapNumber);
+                moveSeries.Add(delStatic);
+                moveSeries.DoOperation(blockUpdateChain);
+            }
+        }
     }
 
     public class DeleteStatic : ExistingStaticOperation
@@ -496,31 +496,31 @@ namespace UltimaLive
         {
         }
 
-		public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
-		{
-        StaticTile[] tiles = getExistingTiles();
+        public override void DoOperation(Dictionary<int, LocalUpdateFlags> blockUpdateChain)
+        {
+            StaticTile[] tiles = getExistingTiles();
 
-        if (tiles == null || tiles.Length == 0)
+            if (tiles == null || tiles.Length == 0)
             {
-          return;
+                return;
+            }
+
+            StaticTile existingTile = new StaticTile();
+            int idx = lookupExistingStatic(ref existingTile);
+
+            if (idx >= 0 && idx < tiles.Length)
+            {
+
+                List<StaticTile> newTileList = new List<StaticTile>(tiles);
+
+                newTileList.RemoveAt(idx);
+
+                //reassign the array
+                m_Block[Location.X & 0x7][Location.Y & 0x7] = newTileList.ToArray();
+
+                base.DoOperation(blockUpdateChain);
+            }
         }
-
-        StaticTile existingTile = new StaticTile();
-        int idx = lookupExistingStatic(ref existingTile);
-
-        if (idx >= 0 && idx < tiles.Length)
-                {
-
-          List<StaticTile> newTileList = new List<StaticTile>(tiles);
-
-          newTileList.RemoveAt(idx);
-
-			//reassign the array
-          m_Block[Location.X & 0x7][Location.Y & 0x7] = newTileList.ToArray();
-
-            base.DoOperation(blockUpdateChain);
-        }
-      }
     }
     #endregion
 

@@ -45,7 +45,7 @@ namespace UltimaLive
 
             if (blocknum != previousMapBlock)
             {
-              m.Send(new UltimaLive.Network.QueryClientHash(m));
+                m.Send(new UltimaLive.Network.QueryClientHash(m));
             }
 
             return blocknum;
